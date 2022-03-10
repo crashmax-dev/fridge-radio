@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.12.0/dist/sortable.umd.min.js"></script>
+    <link rel="stylesheet" href="./index.css">
+  </head>
+  <body>
+    <audio controls src='/stream' type='audio/mp3'></audio>
+    <div>
+      <div class='showcase'>
+        <button onclick="info()">Get Current Playing Track Meta</button>
+        <div class='result'>
+            <p id='artist'>Artist:</p>
+            <p id='title'>Title:</p>
+            <img id='cover' src='https://t3.ftcdn.net/jpg/01/09/40/34/240_F_109403479_3BJH2QY7zrMV5OUGPePPmxPYZf0zY4lR.jpg'></p>
+        </div>
+      </div>
+      <h2>Station controls should be private</h2>
+      <div class='showcase'>
+        <button onclick="controlsGetPlaylist()">Show playlist</button>
+        <button onclick="controlsShufflePlaylist()">Shuffle playlist</button>
+        <button onclick="controlsNext()">Next</button>
+        <div class="list-group" id='getPlaylist'></div>
+      </div>
+    </div>
+  </body>
+  <script src="./index.js"></script>
+</html>
