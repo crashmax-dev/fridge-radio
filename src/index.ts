@@ -1,83 +1,63 @@
 import sirv from 'sirv'
 import { App } from '@tinyhttp/app'
-import { Station, PUBLIC_EVENTS, SHUFFLE_METHODS } from '@fridgefm/radio-core'
-import type { ShallowTrackMeta } from '@fridgefm/radio-core/lib/base/Track/Track.types'
+import { Radio } from './radio.js'
+
+const stations = [
+  'indie',
+  'mashup',
+  'trash'
+] as const
+
+type Stations = typeof stations[number]
+
+const radio = new Radio<Stations>({
+  musicFolder: './music',
+  verbose: true,
+  // @ts-ignore
+  stations // WIP
+})
 
 const server = new App()
-const music = new URL('../music', import.meta.url).pathname.substring(1)
-let currentTrack: ShallowTrackMeta
+const PORT = 8000
 
-const station = new Station({ verbose: true })
-station.on(PUBLIC_EVENTS.ERROR, console.error)
-station.addFolder(music)
-
-station
-  .on(PUBLIC_EVENTS.NEXT_TRACK, async (track) => {
-    currentTrack = await track.getMetaAsync()
-  })
-
-station
-  .on(PUBLIC_EVENTS.START, () => {
-    station.reorderPlaylist(v => v.concat(v))
-  })
-
-station
-  .on(PUBLIC_EVENTS.RESTART, () => {
-    station.reorderPlaylist(v => v.concat(v))
+server
+  .use('/stream/:station', (req, res) => {
+    try {
+      const query = req.params['station'] as Stations
+      const station = radio.getStation(query)
+      // TODO: fix http2 types
+      // @ts-ignore
+      station.connectListener(req, res)
+    } catch (error) {
+      res.json({ error })
+    }
   })
 
 server
-  .get('/stream', (req, res) => {
-    // TODO: patch http2 types
-    // @ts-ignore
-    station.connectListener(req, res)
+  .use('/playing/:station', (req, res) => {
+    try {
+      const query = req.params['station'] as Stations
+      const currentTrack = radio.getTrackMeta(query)
+      res.json(currentTrack)
+    } catch (error) {
+      res.json({ error })
+    }
   })
 
 server
-  .get('/playing', (_, res) => {
-    res.json(currentTrack)
-  })
-
-server
-  .get('/controls/next', (_, res) => {
-    station.next()
-    res.json({
-      message: 'Switched to next track'
-    })
-  })
-
-server
-  .get('/controls/shufflePlaylist', (_, res) => {
-    station.reorderPlaylist(SHUFFLE_METHODS.randomShuffle())
-    res.json({
-      message: 'Playlist shuffled'
-    })
-  })
-
-server
-  .get('/controls/rearrangePlaylist', (req, res) => {
-    const { newIndex, oldIndex } = req.query
-    station.reorderPlaylist(
-      SHUFFLE_METHODS.rearrange({
-        from: Number(oldIndex),
-        to: Number(newIndex)
-      })
-    )
-
-    res.json({
-      message: `Succesfully moved element from "${oldIndex}" to "${newIndex}"`
-    })
-  })
-
-server
-  .get('/controls/getPlaylist', (_, res) => {
-    const plist = station.getPlaylist()
-    res.json(plist)
+  .get('/playlist/:station', (req, res) => {
+    try {
+      const query = req.params['station'] as Stations
+      const playlist = radio.getPlaylist(query)
+      res.json(playlist)
+    } catch (error) {
+      res.json({ error })
+    }
   })
 
 server
   .use('/', sirv('web'))
-  .listen(3000, () => {
-    station.start()
-    console.log('Server started at http://localhost:3000')
+  .listen(PORT, () => {
+    radio.start()
+    console.log(`Server started at http://localhost:${PORT}`)
   })
