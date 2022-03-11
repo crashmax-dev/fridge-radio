@@ -1,4 +1,5 @@
 import path from 'path'
+import { Logger } from './logger.js'
 import { Station, PUBLIC_EVENTS } from '@fridgefm/radio-core'
 import type { TrackList } from '@fridgefm/radio-core/lib/base/Playlist/Playlist.types'
 import type { ShallowTrackMeta } from '@fridgefm/radio-core/lib/base/Track/Track.types'
@@ -49,6 +50,19 @@ export class Radio<T extends string> {
           this.reorderPlaylist(name)
         })
 
+      station.on('einfo', (event) => {
+        Logger.info(event.message!, name)
+      })
+
+      station.on('enexttrack', async (event) => {
+        const track = await event.getMetaAsync()
+        Logger.info(`${track.artist!} - ${track.title!}`, name)
+      })
+
+      station.on('error', (event) => {
+        Logger.error(event.message!, name)
+      })
+
       this.stations[name] = station
     })
   }
@@ -67,7 +81,7 @@ export class Radio<T extends string> {
   getStation(name: T): Record<T, Station>[T] {
     const station = this.stations[name]
 
-    if (!name) {
+    if (!station) {
       throw ERROR.NOT_FOUND
     }
 

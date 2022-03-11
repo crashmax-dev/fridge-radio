@@ -1,5 +1,9 @@
 {
   "extends": "@crashmax/eslint-config",
+  "rules": {
+    "@typescript-eslint/restrict-plus-operands": "off",
+    "@typescript-eslint/restrict-template-expressions": "off"
+  },
   "env": {
     "node": true,
     "browser": true

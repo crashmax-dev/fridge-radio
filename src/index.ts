@@ -1,6 +1,7 @@
 import sirv from 'sirv'
 import { App } from '@tinyhttp/app'
 import { Radio } from './radio.js'
+import { Logger } from './logger.js'
 
 const stations = [
   'indie',
@@ -12,7 +13,7 @@ type Stations = typeof stations[number]
 
 const radio = new Radio<Stations>({
   musicFolder: './music',
-  verbose: true,
+  verbose: false,
   // @ts-ignore
   stations // WIP
 })
@@ -45,7 +46,7 @@ server
   })
 
 server
-  .get('/playlist/:station', (req, res) => {
+  .use('/playlist/:station', (req, res) => {
     try {
       const query = req.params['station'] as Stations
       const playlist = radio.getPlaylist(query)
@@ -59,5 +60,5 @@ server
   .use('/', sirv('web'))
   .listen(PORT, () => {
     radio.start()
-    console.log(`Server started at http://localhost:${PORT}`)
+    Logger.info(`Server started at http://localhost:${PORT}`)
   })
