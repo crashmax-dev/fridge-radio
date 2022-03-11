@@ -1,11 +1,5 @@
 {
   "extends": "@crashmax/eslint-config",
-  "rules": {
-    "@typescript-eslint/restrict-template-expressions": "off",
-    "@typescript-eslint/no-misused-promises": "off",
-    "@typescript-eslint/no-unsafe-argument": "off",
-    "@typescript-eslint/no-unsafe-call": "off"
-  },
   "env": {
     "node": true,
     "browser": true

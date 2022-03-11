@@ -32,7 +32,7 @@
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
-    "@crashmax/eslint-config": "^1.0.4",
+    "@crashmax/eslint-config": "^1.1.0",
     "@sindresorhus/tsconfig": "^2.0.0",
     "@types/node": "^17.0.21",
     "ava": "^4.0.1",
