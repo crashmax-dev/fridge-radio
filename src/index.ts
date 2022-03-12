@@ -2,7 +2,7 @@ import sirv from 'sirv'
 import { App } from '@tinyhttp/app'
 import { Radio } from './radio.js'
 import { Logger } from './logger.js'
-import { stations, PORT } from './config.js'
+import { stations, port } from './config.js'
 import type { ClientRequest } from 'http'
 import type { Request } from '@tinyhttp/app'
 
@@ -51,7 +51,7 @@ server
 
 server
   .use('/', sirv('web/dist'))
-  .listen(PORT, () => {
+  .listen(port, () => {
     radio.start()
-    Logger.info(`Server started at http://localhost:${PORT}`, 'server')
+    Logger.info(`Server started at http://localhost:${port}`, 'server')
   })

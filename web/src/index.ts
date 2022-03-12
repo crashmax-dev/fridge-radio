@@ -1,4 +1,5 @@
 import { el } from 'redom'
+import config from '../../config.json'
 
 const player = el('audio', {
   controls: true,
@@ -7,3 +8,5 @@ const player = el('audio', {
 })
 
 document.body.appendChild(player)
+
+console.log(config)

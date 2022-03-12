@@ -3,7 +3,8 @@
   "description": "web",
   "version": "1.0.0",
   "scripts": {
-    "dev": "parcel watch src/index.html --no-cache --host 127.0.0.1 --port 8080",
+    "dev": "parcel src/index.html --no-cache",
+    "watch": "parcel watch src/index.html --no-cache --host 127.0.0.1 --port 8080",
     "build": "parcel build src/index.html --public-url ./",
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix"

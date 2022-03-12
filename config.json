@@ -1,0 +1,8 @@
+{
+  "port": 8000,
+  "stations": [
+    "indie",
+    "mashup",
+    "trash"
+  ]
+}

@@ -23,7 +23,7 @@
     "start": "npm run build && node dist/index.js",
     "dev": "npm-run-all --parallel dev:*",
     "dev:radio": "tsc-watch --compiler typescript/bin/tsc -p tsconfig.build.json --onSuccess \"node -r tsconfig-paths/register --inspect dist/index.js\"",
-    "dev:web": "cd web && npm run dev",
+    "dev:web": "cd web && npm run watch",
     "build": "npm-run-all build:*",
     "build:radio": "tsc -p tsconfig.build.json",
     "build:web": "cd web && npm run build",
