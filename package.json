@@ -26,7 +26,7 @@
     "dev:web": "cd web && npm run dev",
     "build": "npm-run-all build:*",
     "build:radio": "tsc -p tsconfig.build.json",
-    "build:web": "cd web && npm run build && cp -r dist ../dist/web",
+    "build:web": "cd web && npm run build",
     "test": "ava",
     "test:watch": "ava --watch",
     "lint": "eslint --ext ts .",

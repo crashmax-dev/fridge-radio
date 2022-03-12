@@ -2,35 +2,26 @@ import sirv from 'sirv'
 import { App } from '@tinyhttp/app'
 import { Radio } from './radio.js'
 import { Logger } from './logger.js'
+import { stations, PORT } from './config.js'
+import type { ClientRequest } from 'http'
+import type { Request } from '@tinyhttp/app'
 
-const isDev = process.env.NODE_ENV === 'development'
+type Req = Request & ClientRequest
 
-const stations = [
-  'indie',
-  'mashup',
-  'trash'
-] as const
-
-type Stations = typeof stations[number]
-
-const radio = new Radio<Stations>({
+const radio = new Radio({
   musicFolder: './music',
   verbose: false,
-  // @ts-ignore
-  stations // WIP
+  stations
 })
 
 const server = new App()
-const PORT = 8000
 
 server
   .use('/stream/:station', (req, res) => {
     try {
-      const query = req.params['station'] as Stations
+      const query = req.params['station']!
       const station = radio.getStation(query)
-      // TODO: fix http2 types
-      // @ts-ignore
-      station.connectListener(req, res)
+      station.connectListener(req as Req, res)
     } catch (error) {
       res.json({ error })
     }
@@ -39,7 +30,7 @@ server
 server
   .use('/playing/:station', (req, res) => {
     try {
-      const query = req.params['station'] as Stations
+      const query = req.params['station']!
       const currentTrack = radio.getTrackMeta(query)
       res.json(currentTrack)
     } catch (error) {
@@ -50,7 +41,7 @@ server
 server
   .use('/playlist/:station', (req, res) => {
     try {
-      const query = req.params['station'] as Stations
+      const query = req.params['station']!
       const playlist = radio.getPlaylist(query)
       res.json(playlist)
     } catch (error) {
@@ -58,12 +49,8 @@ server
     }
   })
 
-const webFolder = isDev ?
-  'web/dist' :
-  'web'
-
 server
-  .use('/', sirv(webFolder))
+  .use('/', sirv('web/dist'))
   .listen(PORT, () => {
     radio.start()
     Logger.info(`Server started at http://localhost:${PORT}`, 'server')
