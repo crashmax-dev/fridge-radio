@@ -3,6 +3,8 @@ import { App } from '@tinyhttp/app'
 import { Radio } from './radio.js'
 import { Logger } from './logger.js'
 
+const isDev = process.env.NODE_ENV === 'development'
+
 const stations = [
   'indie',
   'mashup',
@@ -56,9 +58,13 @@ server
     }
   })
 
+const webFolder = isDev ?
+  'web/dist' :
+  'web'
+
 server
-  .use('/', sirv('web'))
+  .use('/', sirv(webFolder))
   .listen(PORT, () => {
     radio.start()
-    Logger.info(`Server started at http://localhost:${PORT}`)
+    Logger.info(`Server started at http://localhost:${PORT}`, 'server')
   })
