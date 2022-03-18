@@ -1,8 +1,7 @@
 import sirv from 'sirv'
 import { App } from '@tinyhttp/app'
 import { Radio } from './radio.js'
-import { Logger } from './logger.js'
-import { stations, port } from './config.js'
+import config from '../radio.config.js'
 import type { ClientRequest } from 'http'
 import type { Request } from '@tinyhttp/app'
 
@@ -11,7 +10,7 @@ type Req = Request & ClientRequest
 const radio = new Radio({
   musicFolder: './music',
   verbose: false,
-  stations
+  stations: config.stations
 })
 
 const server = new App()
@@ -51,7 +50,7 @@ server
 
 server
   .use('/', sirv('web/dist'))
-  .listen(port, () => {
-    radio.start()
-    Logger.info(`Server started at http://localhost:${port}`, 'server')
-  })
+  .listen(config.port, () => {
+    radio.start(true)
+    console.log(`Server started at http://${config.host}:${config.port}`)
+  }, config.host)

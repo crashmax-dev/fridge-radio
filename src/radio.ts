@@ -1,6 +1,5 @@
 import path from 'path'
-import { Logger } from './logger.js'
-import { Station, PUBLIC_EVENTS } from '@fridgefm/radio-core'
+import { Station, PUBLIC_EVENTS, SHUFFLE_METHODS } from '@fridgefm/radio-core'
 import type { TrackList } from '@fridgefm/radio-core/lib/base/Playlist/Playlist.types'
 import type { ShallowTrackMeta } from '@fridgefm/radio-core/lib/base/Track/Track.types'
 
@@ -51,27 +50,30 @@ export class Radio<T extends string> {
         })
 
       station.on('einfo', (event) => {
-        Logger.info(event.message!, name)
+        console.log(`[${name}]: ${event.message!}`)
       })
 
       station.on('enexttrack', async (event) => {
         const track = await event.getMetaAsync()
-        Logger.info(`${track.artist!} - ${track.title!}`, name)
+        console.log(`[${name}]: ${track.artist!} - ${track.title!}`)
       })
 
       station.on('error', (event) => {
-        Logger.error(event.message!, name)
+        console.log(`[${name}]: ${event.message!}`)
       })
 
       this.stations[name] = station
     })
   }
 
-  start(): void {
-    Object.values(this.stations)
-      .forEach((station) => {
-        (station as Station).start()
-      })
+  start(shuffle: boolean): void {
+    for (const [name, station] of Object.entries<Station>(this.stations)) {
+      if (shuffle) {
+        this.shuffleStation(name as T)
+      }
+
+      station.start()
+    }
   }
 
   next(name: T): void {
@@ -111,7 +113,12 @@ export class Radio<T extends string> {
     return station.getPlaylist()
   }
 
-  private reorderPlaylist(name: T): void {
+  shuffleStation(name: T): void {
+    this.stations[name]
+      .reorderPlaylist(SHUFFLE_METHODS.randomShuffle())
+  }
+
+  reorderPlaylist(name: T): void {
     this.stations[name]
       .reorderPlaylist(playlist => playlist.concat(playlist))
   }
