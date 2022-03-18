@@ -1,6 +1,7 @@
 import sirv from 'sirv'
 import { App } from '@tinyhttp/app'
 import { Radio } from './radio.js'
+// @ts-ignore
 import config from '../radio.config.js'
 import type { ClientRequest } from 'http'
 import type { Request } from '@tinyhttp/app'
