@@ -20,6 +20,7 @@
   "devDependencies": {
     "@crashmax/eslint-config": "^1.1.0",
     "@sindresorhus/tsconfig": "^2.0.0",
+    "@types/express": "^4.17.13",
     "@types/node": "^17.0.21",
     "del-cli": "^4.0.1",
     "husky": "^7.0.4",
@@ -34,7 +35,7 @@
   },
   "dependencies": {
     "@fridgefm/radio-core": "^3.1.2",
-    "@tinyhttp/app": "^2.0.19",
+    "express": "^4.17.3",
     "sirv": "^2.0.2"
   }
 }
