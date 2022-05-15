@@ -4,7 +4,6 @@
     "module": "ESNext",
     "baseUrl": ".",
     "outDir": "dist",
-    "allowJs": true,
     "sourceMap": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
